@@ -1,0 +1,114 @@
+<div data-page="taxi_yar_home" class="page tabbar-labels-fixed">
+	<div class="navbar" id="taxi_yar_home_navbar">
+		<div class="navbar-inner">
+			<!-- <div class="left"><a href="landing.html" class="back link icon-only"><i class="icon icon-back"></i></a></div> -->
+			<div class="center ">تاکسی برگ</div>
+			<div class="right"><a href="#" class="open-panel link icon-only"><i class="icon icon-bars"></i></a></div>
+		</div>
+	</div>
+	<div class="toolbar toolbar-bottom tabbar tabbar-labels" id="taxi_yar_home_bottom_bar">
+		<div class="toolbar-inner">
+			<a href="#tab1" onclick="$$('#taxi_yar_home_navbar .center').html('پرداخت ها');$$('#taxi_yar_home_page-content').css('background-color','#eeeeee');init_virtual_list_of_payments();" class="tab-link"><i class="fa fa-money"></i><span class="tabbar-label">پرداخت ها</span></a>
+			<a href="#tab2" onclick="$$('#taxi_yar_home_navbar .center').html('تاکسی برگ');$$('#taxi_yar_home_page-content').css('background-color','#eeeeee');init_list_drivers();" class="tab-link active"><i class="fa fa-sign-in"></i><span class="tabbar-label">ثبت ورود</span></a>
+			<a href="#tab3" onclick="$$('#taxi_yar_home_navbar .center').html('اعلان ها');$$('#taxi_yar_home_page-content').css('background-color','#eeeeee');init_virtual_list_of_notifications();" class="tab-link"><i class="fa fa-bell"></i><span>اعلان ها</span class="tabbar-label"></a>
+			<a href="#tab4" onclick="$$('#taxi_yar_home_navbar .center').html('فاکتورها');$$('#taxi_yar_home_page-content').css('background-color','#eeeeee');init_virtual_list_of_invoices();" class="tab-link"><i class="fa fa-file-text-o"></i><span class="tabbar-label">فاکتورها</span></a>
+		</div>
+	</div>
+	<!--
+	<div class="toolbar toolbar-bottom">
+		<div class="toolbar-inner">
+			<a href="#" class="link"><i class="fa fa-money"></i><span>حساب</span></a>
+			<a href="#" class="link"><i class="fa fa-map-marker"></i><span>اماکن</span></a>
+			<a href="#" class="link"><i class="fa fa-bell"></i><span>اعلان ها</span></a>
+			<a href="#" class="link"><i class="fa fa-file-text-o"></i><span>فاکتورها</span></a>
+		</div>
+	</div>
+	-->
+	<div class="page-content" id="taxi_yar_home_page-content" style="background-color:#eeeeee;">
+			<div class="tabs">
+				<div id="tab1" class="tab" style="background-color:#eeeeee;">
+					<div class="content-block" >
+						<div class="box-content" style='margin-bottom:10px;'>
+							<a href="#" onclick="myApp.popup('.payment_submit', true, true);convert_persian_digit_to_english();" class="button button-raised button-fill color-green" style="overflow:hidden;margin-bottom:10px;">ثبت پرداخت جدید</a>
+						</div>
+
+						<div id="payment_info_placeholder" ></div>
+						<div class="list-block virtual-list list_of_payments" style="margin-top:5px;"></div>
+					</div>
+				</div>
+				<div id="tab2" class="tab active">
+					<div class="content-block" >
+						<div class="form-container list-block inputs-list submit_discount_code" id="use_discount_code_form">
+							<ul>
+							  <li>
+								<div class="item-content">
+								  <div class="item-inner">
+									<div class="item-input">
+									  <input id="discount_code_value" type="text" name="discount_code_value" pattern="\d*" class="form-control" placeholder="کد تخفیف" >
+									  <div class="help-block with-errors"></div>
+									</div>
+								  </div>
+								</div>
+							  </li>
+							  <li>
+								<div class="item-content">
+								  <div class="item-inner">
+									<div class="item-input">
+									  <input id="price_value" type="text" name="price" pattern="\d*" class="form-control" placeholder="مبلغ تراکنش" >
+									  <div class="help-block with-errors"></div>
+									</div>
+								  </div>
+								</div>
+							  </li>
+							  <li class="align-top">
+								<div class="item-content">
+								  <div class="item-inner">
+									<div class="item-input">
+										<a href="#" onclick="submit_discount_code();" class="button button-raised button-fill color-green" style="overflow:hidden;margin-bottom:10px;">ثبت اطلاعات</a>
+									  <div class="help-block with-errors"></div>
+									</div>
+								  </div>
+								</div>
+							  </li>
+							</ul>
+						</div>
+
+
+						<div class="check_drivers_list" >
+							<div class="list-block virtual-list search-here searchbar-found list_of_check_drivers"></div>
+						</div>
+					</div>
+				</div>
+				<div id="tab3" class="tab" style="background-color:#eeeeee;">
+					<div class="content-block" >
+						<div class="list-block virtual-list list_of_notifications"></div>
+					</div>
+				</div>
+				<div id="tab4" class="tab" style="background-color:#eeeeee;">
+					<!--
+					<form data-search-list=".search-here" data-search-in=".item-title" class="searchbar searchbar-init">
+						<div class="searchbar-input">
+							<input type="search" placeholder="جستجو..."/><a href="#" class="searchbar-clear"></a>
+						</div>
+					</form>
+					<div class="searchbar-overlay"></div>
+					<div class="content-block" >
+						<div class="list-block searchbar-not-found">
+							<ul>
+								<li class="item-content">
+									<div class="item-inner">
+										<div class="item-title">هیچ گزینه ای یافت نشد</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="list-block virtual-list search-here searchbar-found list_of_invoices"></div>
+					</div>
+					-->
+					<div class="content-block" >
+						<div class="list-block virtual-list list_of_invoices"></div>
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
