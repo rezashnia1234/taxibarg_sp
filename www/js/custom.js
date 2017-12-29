@@ -1,4 +1,5 @@
-// setTimeout(function(){
+var client_version = 0.9;
+/*// setTimeout(function(){
 	if(navigator.connection.type)
 		networkState = navigator.connection.type;
 	else
@@ -21,7 +22,7 @@
 		device.platform = "iOS";
 		//document.querySelector('#myNavigator').pushPage('zaer_service_I_Lost_Something.html', {animation: "none"});
 	}
-// }, 500);
+// }, 500);*/
 
 
 $( document ).ready(function(){
@@ -66,10 +67,6 @@ function check_mobile_number()
 		$.ajax({
 				url: server_url+'authwithphonenumber',
 				type: "POST",
-				headers:
-				{
-					'Content-Type': 'application/json',
-				},
 				data: JSON.stringify({ "phone_number":mobile_number }),
 				success : function(text)
 				{
@@ -107,10 +104,6 @@ function check_verify_number()
 		$.ajax({
 				url: server_url+'confirmphone',
 				type: "POST",
-				headers:
-				{
-					'Content-Type': 'application/json',
-				},
 				data: JSON.stringify
 				({
 					"phone_number":window.localStorage.getItem("driver_phone_number"),
@@ -162,16 +155,12 @@ function payment_submit_add()
 		$.ajax({
 				url: server_url+'submitpayment',
 				type: "POST",
-				headers:
-				{
-					'Content-Type': 'application/json',
-					'access-token': window.sessionStorage.getItem('access_token')
-				},
 				data: JSON.stringify
 				({
 					"value":price,
 					"tracking_number":rahgiri,
-					"description":description
+					"description":description,
+					'access-token': window.sessionStorage.getItem('access_token')
 				}),
 				//async: true,
 				success : function(text)
@@ -230,11 +219,10 @@ function init_virtual_list_of_invoices()
 	$.ajax({
 			url: server_url+'getinvoicehistory',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
+			data: JSON.stringify
+			({
 				'access-token': window.sessionStorage.getItem('access_token')
-			},
+			}),
 			//async: true,
 			success : function(text)
 			{
@@ -301,11 +289,10 @@ function init_virtual_list_of_notifications()
 	$.ajax({
 			url: server_url+'getnotifications',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
+			data: JSON.stringify
+			({
 				'access-token': window.sessionStorage.getItem('access_token')
-			},
+			}),
 			//async: true,
 			success : function(text)
 			{
@@ -376,11 +363,10 @@ function init_virtual_list_of_payments()
 	$.ajax({
 			url: server_url+'getpaymentshistory',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
+			data: JSON.stringify
+			({
 				'access-token': window.sessionStorage.getItem('access_token')
-			},
+			}),
 			//async: true,
 			success : function(text)
 			{
@@ -441,15 +427,11 @@ function submit_discount_code()
 		$.ajax({
 				url: server_url+'usediscountcode',
 				type: "POST",
-				headers:
-				{
-					'Content-Type': 'application/json',
-					'access-token': window.sessionStorage.getItem('access_token')
-				},
 				data: JSON.stringify
 				({
 					"discount_code":discount_code,
 					"total_purchase_value":price,
+					'access-token': window.sessionStorage.getItem('access_token')
 				}),
 				//async: true,
 				success : function(text)
@@ -484,14 +466,10 @@ function init_list_drivers()
 	$.ajax({
 			url: server_url+'getinvoicehistory',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
-				'access-token': window.sessionStorage.getItem('access_token')
-			},
 			data: JSON.stringify
 			({
 				"state":'generated',
+				'access-token': window.sessionStorage.getItem('access_token')
 			}),
 			//async: true,
 			success : function(text)
@@ -591,15 +569,11 @@ function check_driver_delete(check_driver_id,index,obj)
 	$.ajax({
 			url: server_url+'acceptarrival',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
-				'access-token': window.sessionStorage.getItem('access_token')
-			},
 			data: JSON.stringify
 			({
 				"invoice_id":check_driver_id,
 				"accept":false,
+				'access-token': window.sessionStorage.getItem('access_token')
 			}),
 			//async: true,
 			success : function(text)
@@ -640,15 +614,11 @@ function check_driver_confirm(check_driver_id,index,obj,type)
 		$.ajax({
 				url: server_url+'acceptarrival',
 				type: "POST",
-				headers:
-				{
-					'Content-Type': 'application/json',
-					'access-token': window.sessionStorage.getItem('access_token')
-				},
 				data: JSON.stringify
 				({
 					"invoice_id":check_driver_id,
 					"accept":true,
+					'access-token': window.sessionStorage.getItem('access_token')
 				}),
 				//async: true,
 				success : function(text)
@@ -690,16 +660,12 @@ function check_driver_edit(check_driver_id,index,obj)
 	$.ajax({
 			url: server_url+'acceptarrival',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
-				'access-token': window.sessionStorage.getItem('access_token')
-			},
 			data: JSON.stringify
 			({
 				"invoice_id":check_driver_id,
 				"accept":true,
-				"number_of_persons":parseInt($$('#person_count_'+check_driver_id.toString()).val())
+				"number_of_persons":parseInt($$('#person_count_'+check_driver_id.toString()).val()),
+				'access-token': window.sessionStorage.getItem('access_token')
 			}),
 			//async: true,
 			success : function(text)
@@ -728,13 +694,11 @@ function login_and_get_data()
 	$.ajax({
 			url: server_url+'loginwithauthtoken',
 			type: "POST",
-			headers:
-			{
-				'Content-Type': 'application/json',
-			},
 			data: JSON.stringify
 			({
-				"auth_token":window.localStorage.getItem("auth_token")
+				"auth_token":window.localStorage.getItem("auth_token"),
+				"client_version":client_version,
+				"os":device.platform
 			}),
 			//async: true,
 			success : function(text)
@@ -757,7 +721,7 @@ function login_and_get_data()
 						window.setInterval(function()
 						{
 							load_new_requests();
-						}, 5000);
+						}, 10000);
 					}
 					$$('#sidebar-driver-name').text(text.data.name);
 					$$('#sidebar-driver-car').text(text.data.car_type + ' ' + text.data.car_color + ' - ' + text.data.license_plate);
@@ -765,8 +729,17 @@ function login_and_get_data()
 				}
 				else
 				{
-					myApp.popup(".login-screen", true, true);
-					convert_persian_digit_to_english();
+					if(text.data.message != undefined)
+					{
+						$$('#force-update-message').text(text.data.message);
+						myApp.popup(".force-update-popup", true, true);
+						window.sessionStorage.setItem('update_url',text.data.update_url);
+					}
+					else
+					{
+						myApp.popup(".login-screen", true, true);
+						convert_persian_digit_to_english();
+					}
 				}
 			},
 			error: function(jqXHR, exception) {
@@ -785,15 +758,11 @@ function load_new_requests()
 	$.ajax({
 	url: server_url+'getinvoicehistory',
 	type: "POST",
-	headers:
-	{
-		'Content-Type': 'application/json',
-		'access-token': window.sessionStorage.getItem('access_token')
-	},
 	data: JSON.stringify
 	({
 		"state":'generated',
-		"last_id":window.localStorage.getItem('max_request_id')
+		"last_id":window.localStorage.getItem('max_request_id'),
+		'access-token': window.sessionStorage.getItem('access_token')
 	}),
 	//async: true,
 	success : function(text)
@@ -822,4 +791,9 @@ function load_new_requests()
 		myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
 	},
 });
+}
+
+function goToUpdate()
+{
+	window.open(window.sessionStorage.getItem('update_url'),'_system');
 }
