@@ -655,7 +655,7 @@ function check_driver_edit(check_driver_id,index,obj)
 	// console.log(temp_count);
 
 
-	console.log('zxc asd ',);
+	console.log('zxc asd ');
 	myApp.showIndicator();
 	$.ajax({
 			url: server_url+'acceptarrival',
