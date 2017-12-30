@@ -68,7 +68,6 @@ input.login_page_mobile {
 	width: 100%;
 	overflow: hidden;
 }
-ul#landing_menu li:hover a{background-color:transparent;color:#ffffff;}
 #map_bg2 {
     height: 100%;
     left: 0;
@@ -120,6 +119,8 @@ table tr td, table tr th {
 	/* padding-bottom:15px; */
 }
 #taxi_yar_home_menu ul.menu a{color:#696969}
+ul#landing_menu li:hover a{background-color:transparent;color:#696969;}
+#taxi_yar_home_menu ul.menu li:hover a {background-color:transparent;color:#696969;}
 /*// صفحه لیست فاکتورها //////////////////////////////////////////////////////////////////////// */
 /*// صفحه لیست فاکتورها //////////////////////////////////////////////////////////////////////// */
 /*// صفحه لیست فاکتورها //////////////////////////////////////////////////////////////////////// */
