@@ -710,22 +710,24 @@ function login_and_get_data()
 					window.sessionStorage.setItem("access_token",text.data.access_token);
 					window.localStorage.setItem("app_data",JSON.stringify(text.data));
 					mainView.router.loadPage('taxi_yar.html');
-					if(text.data.price_mode=='free')
-					{
-
-					}
-					else
-					{
-						$$('#use_discount_code_form').css('display','none');
-						init_list_drivers();
-						window.setInterval(function()
+					setTimeout(function(){
+						if(text.data.price_mode=='free')
 						{
-							load_new_requests();
-						}, 10000);
-					}
-					$$('#sidebar-driver-name').text(text.data.name);
-					$$('#sidebar-driver-car').text(text.data.car_type + ' ' + text.data.car_color + ' - ' + text.data.license_plate);
-					$$("#sidebar-driver-profile-pic").attr("src",text.data.profile_pic_url);
+							$$('#use_discount_code_form').css('display','block');
+						}
+						else
+						{
+							$$('#use_discount_code_form').css('display','none');
+							init_list_drivers();
+							window.setInterval(function()
+							{
+								load_new_requests();
+							}, 10000);
+						}
+						$$('#sidebar-driver-name').text(text.data.name);
+						$$('#sidebar-driver-car').text(text.data.car_type + ' ' + text.data.car_color + ' - ' + text.data.license_plate);
+						$$("#sidebar-driver-profile-pic").attr("src",text.data.profile_pic_url);
+					}, 300);
 				}
 				else
 				{
