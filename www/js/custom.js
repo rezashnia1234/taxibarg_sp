@@ -28,22 +28,7 @@ var client_version = 0.9;
 $( document ).ready(function(){
 
 
-	setTimeout(function () {
-		$('[data-countdown]').each(function() {
-			var $this = $(this), finalDate = $$(this).data('countdown');
-			$this.countdown(finalDate, function(event) {
-				// console.log(event);
-				if(event.type=="finish")
-				{//
-					check_driver_confirm($$(this).data('id'),$$(this).parent().index(),this,'automatic');
-					$this.html(event.strftime('%M:%S'));
-					// console.log(event);
-				}
-				else
-					$this.html(event.strftime('%M:%S'));
-			});
-		});
-	},500);
+
 
 
 });
@@ -554,7 +539,7 @@ function init_list_drivers()
 				myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
 			},
 	});
-  /*setTimeout(function () {
+	setTimeout(function () {
 		$('[data-countdown]').each(function() {
 			var $this = $(this), finalDate = $$(this).data('countdown');
 			$this.countdown(finalDate, function(event) {
@@ -569,7 +554,7 @@ function init_list_drivers()
 					$this.html(event.strftime('%M:%S'));
 			});
 		});
-	},500);*/
+	},1000);
 
 }
 
