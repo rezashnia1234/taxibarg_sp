@@ -727,6 +727,12 @@ function login_and_get_data()
 						$$('#sidebar-driver-name').text(text.data.name);
 						$$('#sidebar-driver-car').text(text.data.car_type + ' ' + text.data.car_color + ' - ' + text.data.license_plate);
 						$$("#sidebar-driver-profile-pic").attr("src",text.data.profile_pic_url);
+						$$('#manual_offline_check').prop('checked',true);
+						if(text.data.manual_offline_since != null)
+						{
+							$$('#manual_offline_check').prop('checked',false);
+						}
+
 					}, 300);
 				}
 				else
@@ -779,7 +785,7 @@ function load_new_requests()
 			{
 				if(arr[i].id>max_id)
 					max_id = arr[i].id;
-				
+
 				var dstate = arr[i]['state'];
 				data.push
 				({
@@ -792,6 +798,30 @@ function load_new_requests()
 			if(max_id>0)
 				window.localStorage.setItem('max_request_id',max_id);
 			myList.prependItems(data);
+		}
+	},
+	error: function(jqXHR, exception) {
+		myApp.hideIndicator();
+		myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+	},
+});
+}
+function setOfflie(offline)
+{
+	$.ajax({
+	url: server_url+'setoffline',
+	type: "POST",
+	data: JSON.stringify
+	({
+		"is_offline":offline,
+		'access-token': window.sessionStorage.getItem('access_token')
+	}),
+	//async: true,
+	success : function(text)
+	{
+		if(offline)
+		{
+			myApp.alert('تغییر وضعیت از دو ساعت بعد در سیستم اعمال می شود.','توجه', function () {});
 		}
 	},
 	error: function(jqXHR, exception) {

@@ -27,6 +27,11 @@ myApp.onPageInit('index', function (page) {
 	{
 		check_net_home_page();
 	}*/
+	$$("#manual_offline_check").on('change',function(e){
+		var s = $$(this).prop("checked")
+		setOfflie(s==false);
+		console.log(s);
+	});
 });
 myApp.onPageInit('landing', function (page) {
 	$$('#map_bg').css("height",$$('body').height() - $$('#landing_menu').height() - 50 + "px");
@@ -590,7 +595,6 @@ myApp.onPageInit('dashboard', function (page) {
 
 	  }
 });
-
 /* ===== masonary Gallery Page ===== */
 myApp.onPageInit('masonry', function (page) {
 	$(document).ready( function(){
