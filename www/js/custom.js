@@ -475,6 +475,7 @@ function init_list_drivers()
 			success : function(text)
 			{
 				console.log(text);
+				var appdata = JSON.parse(window.localStorage.getItem('app_data'));
 				myApp.hideIndicator();
 				if(text.success == true)
 				{
@@ -501,7 +502,7 @@ function init_list_drivers()
 							// Template 7 template to render each item
 							template: '<li class="item-content">' +
 											'<div class="item-title">{{title}}</div>' +
-											'<div class="count" >{{count}} نفر {{index}}</div>' +
+											'<div class="count" >{{count}} '+ appdata.per_person_mode_unit_name +' {{index}}</div>' +
 											'<div class="timer" data-countdown="{{date}}" data-id="{{id}}"></div>' +
 											'<div class="row no-gutter">' +
 												'<div class="col-20"><a href="#" class="button button-fill color-red" onclick="check_driver_delete(\'{{id}}\',$$(this).parent().parent().parent().index(),this);">رد</a></div>' +
@@ -714,6 +715,16 @@ function login_and_get_data()
 						if(text.data.price_mode=='free')
 						{
 							$$('#use_discount_code_form').css('display','block');
+							if(text.data.role == 'doorman')
+							{
+								$$('#use_discount_code_form').css('display','none');
+								init_list_per_person_confirmations();
+								window.setInterval(function()
+								{
+									load_new_per_person_confirmations();
+								}, 10000);
+							}
+
 						}
 						else
 						{
@@ -830,8 +841,327 @@ function setOfflie(offline)
 	},
 });
 }
+function send_support_message()
+{
+	var val = $$("#support_message_text").val();
+	myApp.showIndicator();
+	$.ajax({
+			url: server_url+'send_support_message',
+			type: "POST",
+			data: JSON.stringify
+			({
+				'text':val,
+				'access-token': window.sessionStorage.getItem('access_token')
+			}),
+			//async: true,
+			success : function(text)
+			{
+				myApp.hideIndicator();
+				if(text.success == true)
+				{
+					myApp.alert(text.data,'توجه', function () {});
+					$$("#support_message_text").val('');
+				}
+				else
+					myApp.alert(text.data,'توجه', function () {});
+			},
+			error: function(jqXHR, exception) {
+				myApp.hideIndicator();
+				myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+			},
+	});
+}
 
 function goToUpdate()
 {
 	window.open(window.sessionStorage.getItem('update_url'),'_system');
+}
+
+
+
+
+
+
+
+
+function init_list_per_person_confirmations()
+{
+	var data = JSON.parse(window.localStorage.getItem('app_data'));
+
+	myApp.showIndicator();
+	$.ajax({
+			url: server_url+'getperpersoninvoiceconfirmations',
+			type: "POST",
+			data: JSON.stringify
+			({
+				'access-token': window.sessionStorage.getItem('access_token')
+			}),
+			//async: true,
+			success : function(text)
+			{
+				console.log(text);
+				myApp.hideIndicator();
+				if(text.success == true)
+				{
+					var arr = text.data;
+					var data = [];
+					var max_id = 0;
+					for(var i=0;i<arr.length;i++)
+					{
+						if(arr[i].id>max_id)
+							max_id = arr[i].id;
+						var dstate = arr[i]['state'];
+						data.push
+						({
+							title: arr[i].driver_name,
+							date: arr[i].time,
+							count: arr[i].number_of_persons,
+							id: arr[i].id,
+						});
+					}
+					window.localStorage.setItem('max_request_id',max_id);
+					myList = myApp.virtualList('.list-block.virtual-list.list_of_check_drivers',
+						{
+							items:data,
+							// Template 7 template to render each item
+							template: '<li class="item-content">' +
+											'<div class="item-title">{{title}}</div>' +
+											'<div class="count" >{{count}} نفر {{index}}</div>' +
+											'<div class="timer" data-countdown="{{date}}" data-id="{{id}}"></div>' +
+											'<div class="row no-gutter">' +
+												'<div class="col-20"><a href="#" class="button button-fill color-red" onclick="per_person_confirmation_reject(\'{{id}}\',$$(this).parent().parent().parent().index(),this);">رد</a></div>' +
+												'<div class="col-60"><a href="#" class="button button-fill color-green" onclick="per_person_confirmation_accept(\'{{id}}\',$$(this).parent().parent().parent().index(),this,\'manual\');">تائید</a></div>' +
+												// '<div class="col-20"><a href="#" class="button button-fill color-blue" onclick="check_driver_edit(\'{{id}}\',$$(this).parent().parent().parent().index(),this);">اصلاح</a></div>' +
+												'<div class="col-20">' +
+														'<a href="#" class="button button-fill color-blue" >اصلاح</a>' +
+														'<select id="person_count_{{id}}"class="person_count" name="person_count" class="form-control" placeholder="" onchange="per_person_confirmation_edit(\'{{id}}\',$$(this).parent().parent().parent().index(),this);">' +
+															'<option value=""></option>' +
+															'<option value="1">1</option>' +
+															'<option value="2">2</option>' +
+															'<option value="3">3</option>' +
+															'<option value="4">4</option>' +
+															'<option value="5">5</option>' +
+															'<option value="6">6</option>' +
+															'<option value="7">7</option>' +
+															'<option value="8">8</option>' +
+															'<option value="9">9</option>' +
+															'<option value="10">10</option>' +
+														'</select>' +
+												'</div>' +
+											'</div>' +
+										'</li>',
+							searchAll: function (query, items) {
+								var foundItems = [];
+								for (var i = 0; i < items.length; i++) {
+									// Check if title contains query string
+									if (items[i].title.indexOf(query.trim()) >= 0) foundItems.push(i);
+								}
+								// Return array with indexes of matched items
+								return foundItems;
+							},
+					});
+				}
+				else
+					myApp.alert(text.data,'توجه', function () {});
+			},
+			error: function(jqXHR, exception) {
+				myApp.hideIndicator();
+				myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+			},
+	});
+	setTimeout(function () {
+		$('[data-countdown]').each(function() {
+			var $this = $(this), finalDate = $$(this).data('countdown');
+			$this.countdown(finalDate, function(event) {
+				// console.log(event);
+				if(event.type=="finish")
+				{//
+					check_driver_confirm($$(this).data('id'),$$(this).parent().index(),this,'automatic');
+					$this.html(event.strftime('%M:%S'));
+					// console.log(event);
+				}
+				else
+					$this.html(event.strftime('%M:%S'));
+			});
+		});
+	},1000);
+
+}
+
+
+function load_new_per_person_confirmations()
+{
+	$.ajax({
+	url: server_url+'getperpersoninvoiceconfirmations',
+	type: "POST",
+	data: JSON.stringify
+	({
+		"last_id":window.localStorage.getItem('max_request_id'),
+		'access-token': window.sessionStorage.getItem('access_token')
+	}),
+	//async: true,
+	success : function(text)
+	{
+		myApp.hideIndicator();
+		var max_id = 0;
+		if(text.success == true)
+		{
+			var arr = text.data;
+			var data = [];
+			for(var i=0;i<arr.length;i++)
+			{
+				if(arr[i].id>max_id)
+					max_id = arr[i].id;
+
+				var dstate = arr[i]['state'];
+				data.push
+				({
+					title: arr[i].driver_name,
+					date: arr[i].time,
+					count: arr[i].number_of_persons,
+					id: arr[i].id,
+				});
+			}
+			if(max_id>0)
+				window.localStorage.setItem('max_request_id',max_id);
+			myList.prependItems(data);
+		}
+	},
+	error: function(jqXHR, exception) {
+		myApp.hideIndicator();
+		myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+	},
+});
+}
+
+
+
+function per_person_confirmation_reject(check_driver_id,index,obj)
+{
+	// console.log("check_driver_delete");
+	// console.log(check_driver_id);
+	// console.log(index);
+
+
+	myApp.showIndicator();
+	$.ajax({
+			url: server_url+'confirmperperson',
+			type: "POST",
+			data: JSON.stringify
+			({
+				"confirmation_id":check_driver_id,
+				"accept":false,
+				'access-token': window.sessionStorage.getItem('access_token')
+			}),
+			//async: true,
+			success : function(text)
+			{
+				myApp.hideIndicator();
+				if(text.success == true)
+				{
+					$$(obj).parent().parent().parent().css("overflow","hidden");
+					$$(obj).parent().parent().parent().css("min-height","0");
+					$$(obj).parent().parent().parent().css("height","0");
+					setTimeout(function () {myList.deleteItem(index);},299);
+				}
+				else
+					myApp.alert(text.data,'توجه', function () {});
+			},
+			error: function(jqXHR, exception) {
+				myApp.hideIndicator();
+				myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+			},
+	});
+}
+function per_person_confirmation_accept(check_driver_id,index,obj,type)
+{
+	// console.log("check_driver_confirm");
+	// console.log(check_driver_id);
+	// console.log(index);
+	// console.log(type);//تائید دستی یا تائید زمانی
+	if(type=="automatic")
+	{
+		$$(obj).parent().css("overflow","hidden");
+		$$(obj).parent().css("min-height","0");
+		$$(obj).parent().css("height","0");
+		setTimeout(function () {myList.deleteItem($$(obj).parent().index());},299);
+	}
+	else
+	{
+		myApp.showIndicator();
+		$.ajax({
+				url: server_url+'confirmperperson',
+				type: "POST",
+				data: JSON.stringify
+				({
+					"confirmation_id":check_driver_id,
+					"accept":true,
+					'access-token': window.sessionStorage.getItem('access_token')
+				}),
+				//async: true,
+				success : function(text)
+				{
+					myApp.hideIndicator();
+					if(text.success == true)
+					{
+						$$(obj).parent().parent().parent().css("overflow","hidden");
+						$$(obj).parent().parent().parent().css("min-height","0");
+						$$(obj).parent().parent().parent().css("height","0");
+						setTimeout(function () {
+							myList.deleteItem($$(obj).parent().parent().parent().index());
+						},299);
+					}
+					else
+						myApp.alert(text.data,'توجه', function () {});
+				},
+				error: function(jqXHR, exception) {
+					myApp.hideIndicator();
+					myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+				},
+		});
+	}
+}
+function per_person_confirmation_edit(check_driver_id,index,obj)
+{
+	var temp_count = $$(obj).val();
+	if(temp_count=="")
+		return false;
+
+	// console.log("check_driver_edit");
+	// console.log(check_driver_id);
+	// console.log(index);
+	// console.log(temp_count);
+
+
+	console.log('zxc asd ');
+	myApp.showIndicator();
+	$.ajax({
+			url: server_url+'confirmperperson',
+			type: "POST",
+			data: JSON.stringify
+			({
+				"confirmation_id":check_driver_id,
+				"accept":true,
+				"passenger_count":parseInt($$('#person_count_'+check_driver_id.toString()).val()),
+				'access-token': window.sessionStorage.getItem('access_token')
+			}),
+			//async: true,
+			success : function(text)
+			{
+				myApp.hideIndicator();
+				if(text.success == true)
+				{
+					$$(obj).parent().parent().parent().css("overflow","hidden");
+					$$(obj).parent().parent().parent().css("min-height","0");
+					$$(obj).parent().parent().parent().css("height","0");
+					setTimeout(function () {myList.deleteItem(index);},299);
+				}
+				else
+					myApp.alert(text.data,'توجه', function () {});
+			},
+			error: function(jqXHR, exception) {
+				myApp.hideIndicator();
+				myApp.alert('در پروسه اتصال به سرور مشکلی به وجود آماده است ، لطفا وضعیت اینترنت را بررسی نمایید.','توجه', function () {});
+			},
+	});
 }

@@ -595,6 +595,7 @@ myApp.onPageInit('dashboard', function (page) {
 
 	  }
 });
+
 /* ===== masonary Gallery Page ===== */
 myApp.onPageInit('masonry', function (page) {
 	$(document).ready( function(){
