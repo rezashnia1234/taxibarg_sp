@@ -358,7 +358,7 @@ function init_virtual_list_of_payments()
 	$$("#payment_info_placeholder").html('<div id="payment_info"  onclick="cordova.plugins.clipboard.copy(\'IR120550180280003280150001\',function(){myApp.alert(\'شماره شبا به حافظه دستگاه شما منتقل شد.\',\'توجه\', function () {});});"><div class="paymentable green_text"><div class="paymentable_title"><i class="fa fa-check" aria-hidden="true"></i>  قابل پرداخت</div><div class="paymentable_value">'+to_pay+' ریال</div></div>' +
 							 // '<div class="paymentable"><div class="paymentable_title"><i class="fa fa-money" aria-hidden="true"></i>  موجودی</div><div class="paymentable_value">1،000،000 ریال</div></div>' +
 							 '<div class="account_number">شماره شبا : IR120550180280003280150001 <i class="fa fa-clone" aria-hidden="true"></i></div>' +
-							 '<div class="account_number">شماره کارت : 6037-9974-0153-5118 <i class="fa fa-clone" aria-hidden="true"></i></div>' +
+							 '<div class="account_number">شماره کارت : 5118-0153-9974-6037</div>' +
 							 '<div class="account_name">به نام حامد نیک</div>' +  '</div>' +
 							'');
 	$.ajax({
